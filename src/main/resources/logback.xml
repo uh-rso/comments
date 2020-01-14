@@ -1,0 +1,23 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <appender name="logit" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>44853030-dc22-4d4e-89b9-5738172893cd-ls.logit.io:23646</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <root level="INFO">
+        <!--<appender-ref ref="jsonConsoleAppender" />-->
+        <appender-ref ref="logit" />
+    </root>
+
+    <!--
+    <logger name="jsonLogger" level="TRACE">
+        <appender-ref ref="jsonConsoleAppender" />
+    </logger>
+    -->
+</configuration>
