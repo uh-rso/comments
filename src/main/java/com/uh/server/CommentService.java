@@ -7,20 +7,32 @@ import java.util.stream.Collectors;
 import com.uh.server.dto.CommentDto;
 import com.uh.server.persistence.jpa.CommentEntity;
 import com.uh.server.persistence.jpa.CommentRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 @Transactional
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final RestTemplate restTemplate;
+    private final String mediaApiUrl;
 
-    public CommentService(final CommentRepository commentRepository) {
+    public CommentService(
+            final CommentRepository commentRepository,
+            final RestTemplate restTemplate,
+            @Value("${media-api-url:#{null}}") final String mediaApiUrl) {
         this.commentRepository = commentRepository;
+        this.restTemplate = restTemplate;
+        this.mediaApiUrl = mediaApiUrl;
     }
 
     public CommentDto createComment(final String mediaId, final String userId, final CommentDto comment) {
+        // Check that media exists (returns 200)
+        restTemplate.getForObject(mediaApiUrl + "/v1/media/" + mediaId, Object.class);
+
         CommentEntity entity = new CommentEntity();
         entity.setAuthorId(userId);
         entity.setMediaId(mediaId);
